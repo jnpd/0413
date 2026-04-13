@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.wms.warehouse.mapper.WarehouseMapper">
+
+    <resultMap id="warehousePageResultMap" type="org.springblade.modules.wms.warehouse.pojo.vo.WarehousePageVO">
+        <result column="device_id" property="deviceId"/>
+        <result column="meter_id" property="meterId"/>
+        <result column="imei" property="imei"/>
+        <result column="meter_no" property="meterNo"/>
+        <result column="inbound_time" property="inboundTime"/>
+        <result column="forward_total_flow" property="forwardTotalFlow"/>
+        <result column="reverse_total_flow" property="reverseTotalFlow"/>
+        <result column="prep_id" property="prepId"/>
+        <result column="prep_no" property="prepNo"/>
+        <result column="main_ip" property="mainIp"/>
+        <result column="backup_ip" property="backupIp"/>
+        <result column="meter_name" property="meterName"/>
+        <result column="meter_model" property="meterModel"/>
+        <result column="meter_caliber" property="meterCaliber"/>
+        <result column="protocol_type" property="protocolType"/>
+        <result column="protocol_type_name" property="protocolTypeName"/>
+        <result column="carrier" property="carrier"/>
+        <result column="carrier_name" property="carrierName"/>
+        <result column="valve_status" property="valveStatus"/>
+        <result column="battery_voltage" property="batteryVoltage"/>
+        <result column="box_no" property="boxNo"/>
+        <result column="vendor_code" property="vendorCode"/>
+        <result column="iccid" property="iccid"/>
+        <result column="csq" property="csq"/>
+        <result column="rsrp" property="rsrp"/>
+        <result column="rsrq" property="rsrq"/>
+        <result column="stock_status" property="stockStatus"/>
+        <result column="test_status" property="testStatus"/>
+        <result column="outbound_time" property="outboundTime"/>
+        <result column="outbound_operator_name" property="outboundOperatorName"/>
+        <result column="remark" property="remark"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="selectWarehouseStats" resultType="org.springblade.modules.wms.warehouse.pojo.vo.WarehouseStatsVO">
+        select
+            sum(case when d.stock_status = 0 then 1 else 0 end) as in_stock_count,
+            sum(case when d.stock_status = 1 then 1 else 0 end) as outbound_count,
+            sum(case when d.test_status = 0 then 1 else 0 end) as pending_count,
+            sum(case when d.test_status = 1 then 1 else 0 end) as passed_count,
+            sum(case when d.test_status = 2 then 1 else 0 end) as failed_count
+        from tb_device d
+        where d.is_deleted = 0
+    </select>
+
+    <select id="selectWarehousePage" resultMap="warehousePageResultMap">
+        select
+            d.device_id,
+            d.meter_id,
+            d.imei,
+            d.meter_no,
+            d.inbound_time,
+            ml.forward_total_flow,
+            ml.reverse_total_flow,
+            d.prep_id,
+            sp.prep_no,
+            ml.main_ip,
+            ml.backup_ip,
+            tm.meter_name,
+            tm.meter_model,
+            tm.meter_caliber,
+            d.protocol_type,
+            case d.protocol_type
+                when 0 then 'CJT188'
+                when 1 then 'SR'
+                when 2 then '恩乐曼'
+                else ''
+            end as protocol_type_name,
+            d.carrier,
+            case d.carrier
+                when 0 then '移动'
+                when 1 then '电信'
+                when 2 then '联通'
+                else ''
+            end as carrier_name,
+            ml.valve_status,
+            ml.battery_voltage,
+            d.box_no,
+            d.vendor_code,
+            ml.iccid,
+            ml.csq,
+            ml.rsrp,
+            ml.rsrq,
+            d.stock_status,
+            d.test_status,
+            d.outbound_time,
+            d.outbound_operator_name,
+            d.remark,
+            d.update_time
+        from tb_device d
+        left join tb_meter_latest ml on ml.device_id = d.device_id
+        left join tb_meter tm on tm.id = d.meter_id
+        left join tl_stock_prep sp on sp.id = d.prep_id
+        where d.is_deleted = 0
+        <if test="keyword != null and keyword != ''">
+            and (
+                d.imei like concat('%', #{keyword}, '%')
+                or d.meter_no like concat('%', #{keyword}, '%')
+                or sp.prep_no like concat('%', #{keyword}, '%')
+            )
+        </if>
+        <if test="stockStatus != null">
+            and d.stock_status = #{stockStatus}
+        </if>
+        <if test="testStatus != null">
+            and d.test_status = #{testStatus}
+        </if>
+        order by d.inbound_time desc
+    </select>
+
+    <select id="selectWarehouseDetail" resultMap="warehousePageResultMap">
+        select
+            d.device_id,
+            d.meter_id,
+            d.imei,
+            d.meter_no,
+            d.inbound_time,
+            ml.forward_total_flow,
+            ml.reverse_total_flow,
+            d.prep_id,
+            sp.prep_no,
+            ml.main_ip,
+            ml.backup_ip,
+            tm.meter_name,
+            tm.meter_model,
+            tm.meter_caliber,
+            d.protocol_type,
+            case d.protocol_type
+                when 0 then 'CJT188'
+                when 1 then 'SR'
+                when 2 then '恩乐曼'
+                else ''
+            end as protocol_type_name,
+            d.carrier,
+            case d.carrier
+                when 0 then '移动'
+                when 1 then '电信'
+                when 2 then '联通'
+                else ''
+            end as carrier_name,
+            ml.valve_status,
+            ml.battery_voltage,
+            d.box_no,
+            d.vendor_code,
+            ml.iccid,
+            ml.csq,
+            ml.rsrp,
+            ml.rsrq,
+            d.stock_status,
+            d.test_status,
+            d.outbound_time,
+            d.outbound_operator_name,
+            d.remark,
+            d.update_time
+        from tb_device d
+        left join tb_meter_latest ml on ml.device_id = d.device_id
+        left join tb_meter tm on tm.id = d.meter_id
+        left join tl_stock_prep sp on sp.id = d.prep_id
+        where d.device_id = #{deviceId}
+          and d.is_deleted = 0
+        limit 1
+    </select>
+
+</mapper>

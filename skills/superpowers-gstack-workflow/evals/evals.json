@@ -1,0 +1,40 @@
+{
+  "skill_name": "superpowers-gstack-workflow",
+  "evals": [
+    {
+      "id": 1,
+      "name": "插件冲突-选型裁决",
+      "prompt": "我们团队刚统一用 Claude Code，有人装了 oh-my-claudecode、feature-dev、ralph-loop 和 superpowers，说写计划时经常随机跳到不同 skill，行为不可复现。我是轨物这边做 IoT 后端的，想改成稳定一点的搭配。你帮我定一套「谁负责想、谁负责动手」的规则，并说明哪些插件建议卸掉、日常任务默认走哪条 skill。",
+      "expected_output": "明确 superpowers vs gstack 分工、冲突原因、建议保留/卸载插件、给出路由表或 CLAUDE.md 裁决思路，不虚构不存在的命令版本号。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "高风险需求-闭环与交接点",
+      "prompt": "仓库里有 specs/2026-04/xxx/spec.md，要改多租户隔离里告警规则的一条边界条件，涉及协议解析和 API。你用 Claude Code 的话，从 brainstorming 到能上线的完整路径应该怎么排？特别说明：哪一步必须独立 reviewer、哪一步必须用真实浏览器或 QA 验证、verification 和 code review 为什么不能合并。",
+      "expected_output": "按本 skill 的标准闭环叙述，点出 writing-plans→executing-plans、实现后→/browse 或 /qa、verification→requesting-code-review、分支收尾→/ship 等交接点，并结合「高风险改动」强调证据与独立审查。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "前端可见改动-验证入口",
+      "prompt": "我加了一个设备详情页的加载状态，本地 npm run dev 起了。同事说要在真浏览器里点一遍才算数。superpowers 和 gstack 里应该谁来做页面验证？如果项目 CLAUDE.md 规定 /browse 是唯一浏览器入口，你还应该注意什么？",
+      "expected_output": "页面真实渲染与 E2E 类验证归 gstack（如 /browse、/qa）；superpowers 负责 TDD/调试方法论；说明不混用多个浏览器 MCP、遵循项目 CLAUDE.md。",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "发布与监控-手脚侧",
+      "prompt": "功能在 feature 分支上测完了，准备发测试环境然后观察线上 canary。计划文档里写了 ship 和 deploy，但没人说清楚该用哪些命令习惯。按 superpowers+gstack 的分工，分支收尾、发 PR、合线、上线后盯错误分别默认走哪边？",
+      "expected_output": "finishing-a-development-branch 等归 superpowers；/ship、/land-and-deploy、/canary 等归 gstack；表述以职责为主，可注明具体 slash 以插件版本为准。",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "负例-纯业务不写 harness",
+      "prompt": "只帮我从业务角度写一段多租户告警优先级的产品说明，给产品经理看，不要提 Claude Code、插件和 skill。",
+      "expected_output": "本 skill 不应被强制套用；助手应直接写产品说明，而不是展开 superpowers/gstack 工作流。",
+      "files": []
+    }
+  ]
+}

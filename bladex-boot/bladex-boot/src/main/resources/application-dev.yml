@@ -1,0 +1,78 @@
+#数据源配置
+spring:
+  data:
+    redis:
+      ##redis 单机环境配置
+      host: 122.9.129.13
+      port: 6379
+      password: thingcom@2024!
+      database: 11
+      ssl:
+        enabled: false
+      ##redis 集群环境配置
+      #cluster:
+      #  nodes: 127.0.0.1:7001,127.0.0.1:7002,127.0.0.1:7003
+      #  commandTimeout: 5000
+  datasource:
+    # MySql
+   url: jdbc:mysql://122.9.129.13:3306/water_dev?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+   username: root
+   password: thingcom@123456
+    # PostgreSQL
+    # url: jdbc:postgresql://120.55.191.169:35432/pv_test
+    #username: haas_admin
+    #password: 106Ling106$
+    # Oracle
+    #url: jdbc:oracle:thin:@//127.0.0.1:1521/ORCLPDB
+    #username: BLADEX_BOOT
+    #password: BLADEX_BOOT
+    # SqlServer
+    #url: jdbc:sqlserver://127.0.0.1:1433;DatabaseName=bladex_boot
+    #username: bladex_boot
+    #password: bladex_boot
+    # DaMeng
+    #url: jdbc:dm://127.0.0.1:5236/BLADEX_BOOT?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=utf-8
+    #username: BLADEX_BOOT
+    #password: BLADEX_BOOT
+    # YashanDB
+    #url: jdbc:yasdb://127.0.0.1:1688/BLADEX_BOOT
+    #username: BLADEX_BOOT
+    #password: BLADEX_BOOT
+    # KingbaseES
+    #url: jdbc:kingbase8://localhost:4321/bladex
+    #username: kingbase
+    #password: 123456
+
+#第三方登陆
+social:
+  enabled: true
+  domain: http://127.0.0.1:2888
+
+#oss默认配置
+oss:
+  #开启oss配置
+  enabled: true
+  #开启oss类型
+  #minio、s3、qiniu、alioss、huaweiobs、tencentcos
+  name: minio
+  #租户模式
+  tenant-mode: true
+  #oss服务地址
+  endpoint: http://127.0.0.1:9000
+  #oss转换服务地址，用于内网上传后将返回地址改为转换的外网地址
+  transform-endpoint: http://localhost:9000
+  #访问key
+  access-key: bladexadmin
+  #密钥key
+  secret-key: bladexadmin
+  #存储桶
+  bucket-name: bladex
+
+#blade配置
+blade:
+  #分布式锁配置
+  lock:
+    ##是否启用分布式锁
+    enabled: false
+    ##redis服务地址
+    address: redis://127.0.0.1:6379

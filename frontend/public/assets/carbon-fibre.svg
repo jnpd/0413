@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160" fill="none">
+  <rect width="160" height="160" fill="#081221"/>
+  <g opacity="0.42">
+    <path d="M0 20L20 0H60L40 20H0Z" fill="#13263D"/>
+    <path d="M40 20L60 0H100L80 20H40Z" fill="#0E1D31"/>
+    <path d="M80 20L100 0H140L120 20H80Z" fill="#13263D"/>
+    <path d="M120 20L140 0H160V20H120Z" fill="#0E1D31"/>
+
+    <path d="M0 60L20 40H60L40 60H0Z" fill="#0E1D31"/>
+    <path d="M40 60L60 40H100L80 60H40Z" fill="#13263D"/>
+    <path d="M80 60L100 40H140L120 60H80Z" fill="#0E1D31"/>
+    <path d="M120 60L140 40H160V60H120Z" fill="#13263D"/>
+
+    <path d="M0 100L20 80H60L40 100H0Z" fill="#13263D"/>
+    <path d="M40 100L60 80H100L80 100H40Z" fill="#0E1D31"/>
+    <path d="M80 100L100 80H140L120 100H80Z" fill="#13263D"/>
+    <path d="M120 100L140 80H160V100H120Z" fill="#0E1D31"/>
+
+    <path d="M0 140L20 120H60L40 140H0Z" fill="#0E1D31"/>
+    <path d="M40 140L60 120H100L80 140H40Z" fill="#13263D"/>
+    <path d="M80 140L100 120H140L120 140H80Z" fill="#0E1D31"/>
+    <path d="M120 140L140 120H160V140H120Z" fill="#13263D"/>
+  </g>
+  <g opacity="0.18">
+    <path d="M20 0L0 20V40L40 0H20Z" fill="#274B73"/>
+    <path d="M60 0L20 40V60L80 0H60Z" fill="#274B73"/>
+    <path d="M100 0L60 40V60L120 0H100Z" fill="#274B73"/>
+    <path d="M140 0L100 40V60L160 0H140Z" fill="#274B73"/>
+
+    <path d="M20 40L0 60V80L40 40H20Z" fill="#274B73"/>
+    <path d="M60 40L20 80V100L80 40H60Z" fill="#274B73"/>
+    <path d="M100 40L60 80V100L120 40H100Z" fill="#274B73"/>
+    <path d="M140 40L100 80V100L160 40H140Z" fill="#274B73"/>
+
+    <path d="M20 80L0 100V120L40 80H20Z" fill="#274B73"/>
+    <path d="M60 80L20 120V140L80 80H60Z" fill="#274B73"/>
+    <path d="M100 80L60 120V140L120 80H100Z" fill="#274B73"/>
+    <path d="M140 80L100 120V140L160 80H140Z" fill="#274B73"/>
+
+    <path d="M20 120L0 140V160H20L40 140V120H20Z" fill="#274B73"/>
+    <path d="M60 120L20 160H40L80 120H60Z" fill="#274B73"/>
+    <path d="M100 120L60 160H80L120 120H100Z" fill="#274B73"/>
+    <path d="M140 120L100 160H120L160 120H140Z" fill="#274B73"/>
+  </g>
+</svg>

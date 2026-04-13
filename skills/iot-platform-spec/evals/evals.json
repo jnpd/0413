@@ -1,0 +1,50 @@
+{
+  "skill_name": "iot-platform-spec",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "我们要给设备管理模块加批量导入功能，从Excel导入设备列表并自动分配到对应租户。项目根目录有 AGENTS.md、REPO_WIKI.md 和 docs/ 目录，知识库结构完整。帮我写这个需求的规格（spec.md）。",
+      "expected_output": "一份完整的 spec.md，包含背景目标、非目标、业务规则（引用知识库）、正常流程、异常流程、影响范围、验收标准、风险与回滚。",
+      "files": [],
+      "assertions": [
+        "reads-knowledge-base-first: transcript mentions reading AGENTS.md, REPO_WIKI.md, or relevant docs before writing the spec",
+        "has-background-and-goals: spec.md contains a background/目标 section explaining why the feature exists",
+        "has-explicit-business-rules: spec.md contains at least 2 explicit business rules",
+        "cites-knowledge-doc-for-tenant-rule: spec.md references the multi-tenant isolation doc for tenant-related rules",
+        "has-exception-flows: spec.md includes exception flows (permission failure, duplicate import, invalid format)",
+        "has-acceptance-criteria: spec.md contains specific, verifiable acceptance criteria",
+        "flags-tenant-isolation-as-high-risk: spec.md explicitly flags multi-tenant isolation as a risk or high-risk area"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "正在为告警规则配置功能写测试用例：设备离线超5分钟触发告警，需要支持多租户隔离。项目使用 thingcom 知识库结构（AGENTS.md + REPO_WIKI.md + docs/）。帮我写 test-cases.md。",
+      "expected_output": "一份完整的 test-cases.md，覆盖正常场景、异常场景（设备离线、租户越界、重复上报、权限不足）、状态不变量、回归点。",
+      "files": [],
+      "assertions": [
+        "references-testing-baseline: output mentions docs/08-testing/核心测试场景库.md or its must-test categories",
+        "covers-device-offline: test case for device offline handling (alert after 5min)",
+        "covers-tenant-boundary-violation: test case for cross-tenant access",
+        "covers-duplicate-reports: test case for duplicate/repeated alert reports",
+        "covers-permission-insufficient: test case for insufficient permissions",
+        "covers-normal-flow: normal/happy path test cases present",
+        "structured-table-or-list: test cases in structured table or numbered list format"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "刚修了个线上 bug：删除检验台记录时没有检查绑定关系，导致数据孤岛。bug 已修复。项目使用 thingcom 知识库结构（docs/10-incidents/、docs/02-business-rules/、docs/08-testing/）。帮我把这次 bug 经验写回知识库（知识回灌）。",
+      "expected_output": "明确的知识回灌计划，包含：缺陷案例索引条目（实际内容）、根因分类、补测试建议、业务规则文档更新、测试场景库更新，以及每项更新的原因说明。",
+      "files": [],
+      "assertions": [
+        "mentions-incident-index: output explicitly mentions updating docs/10-incidents/缺陷案例索引.md",
+        "provides-incident-entry-content: actual written content for the incident entry provided",
+        "classifies-root-cause: root cause type classified (e.g., 业务规则缺失)",
+        "mentions-test-patch: adding a deletion guard test case mentioned",
+        "mentions-business-rule-doc: updating a business rule doc to capture the deletion guard rule",
+        "mentions-testing-scenarios: updating docs/08-testing/核心测试场景库.md mentioned",
+        "explains-why-each-update: reasoning behind each knowledge doc update explained"
+      ]
+    }
+  ]
+}

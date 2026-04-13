@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.system.mapper.ApiKeyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="apiKeyResultMap" type="org.springblade.modules.system.pojo.entity.ApiKey">
+        <id column="api_key" property="apiKey"/>
+        <result column="user_id" property="userId"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="name" property="name"/>
+        <result column="expire_time" property="expireTime"/>
+        <result column="ext_params" property="extParams"/>
+        <result column="api_path" property="apiPath"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <!-- VO查询映射结果 -->
+    <resultMap id="apiKeyVOResultMap" type="org.springblade.modules.system.pojo.vo.ApiKeyVO">
+        <id column="api_key" property="apiKey"/>
+        <result column="user_id" property="userId"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="name" property="name"/>
+        <result column="expire_time" property="expireTime"/>
+        <result column="ext_params" property="extParams"/>
+        <result column="api_path" property="apiPath"/>
+        <result column="status" property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="user_name" property="userName"/>
+        <result column="account" property="account"/>
+    </resultMap>
+
+    <select id="selectApiKeyPage" resultMap="apiKeyVOResultMap">
+        SELECT
+            k.*,
+            u.name AS user_name,
+            u.account AS account
+        FROM
+            blade_api_key k
+        LEFT JOIN blade_user u ON k.user_id = u.id
+        WHERE
+            k.is_deleted = 0 AND k.tenant_id = #{apiKey.tenantId}
+        <if test="apiKey.name != null and apiKey.name != ''">
+            AND k.name LIKE CONCAT('%', #{apiKey.name}, '%')
+        </if>
+        <if test="apiKey.userId != null">
+            AND k.user_id = #{apiKey.userId}
+        </if>
+        <if test="apiKey.status != null">
+            AND k.status = #{apiKey.status}
+        </if>
+        ORDER BY k.create_time DESC
+    </select>
+
+</mapper>
+

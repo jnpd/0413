@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --primary-color: #005596;
+  --secondary-color: #F39200;
+  --border-radius: 1rem;
+  --sidebar-bg: #001529;
+}
+
+@theme {
+  --font-sans: "Microsoft YaHei", "PingFang SC", "Segoe UI", "Helvetica Neue", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: Consolas, "Cascadia Code", "SFMono-Regular", ui-monospace, monospace;
+  --radius-xl: var(--border-radius);
+  --color-primary: var(--primary-color);
+  --color-secondary: var(--secondary-color);
+}
+
+@layer utilities {
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+}
+
+@layer base {
+  body {
+    @apply antialiased text-slate-900 bg-gray-50;
+  }
+}
+
+/* Custom scrollbar for industrial feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full hover:bg-gray-400 transition-colors;
+}
