@@ -75,6 +75,7 @@
 
 - BladeX 前端登录与仓库接口联调说明：`docs/02-rules/BladeX前端登录与仓库接口联调说明.md`
 - 仓库页本地联调前置清单：`docs/06-release-ops/仓库页本地联调前置清单.md`
+- 当前版本沉淀：`docs/06-release-ops/2026-04当前版本沉淀.md`
 
 ## 维护规则
 

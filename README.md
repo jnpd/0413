@@ -33,6 +33,7 @@
 - 交付护栏：`docs/00-meta/交付护栏契约.md`
 - 试点节奏：`试点启动说明.md`
 - 第一周清单：`项目交接清单与第一周任务表.md`
+- 当前版本沉淀：`docs/06-release-ops/2026-04当前版本沉淀.md`
 - 知识索引：`REPO_WIKI.md`
 - Agent 规则：`AGENTS.md`
 - 项目概览：`docs/01-overview/项目概览.md`
