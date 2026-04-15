@@ -4,9 +4,11 @@ import { User, Bell, Search, LogOut, Settings } from 'lucide-react';
 interface HeaderProps {
   title: string;
   section: string;
+  userName?: string;
+  userRole?: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ title, section }) => {
+export const Header: React.FC<HeaderProps> = ({ title, section, userName = '当前用户', userRole = 'User' }) => {
   return (
     <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-30 shadow-sm">
       <div className="flex items-center gap-4">
@@ -49,8 +51,8 @@ export const Header: React.FC<HeaderProps> = ({ title, section }) => {
           
           <div className="flex items-center gap-3 pl-2 cursor-pointer group">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-black text-slate-900 leading-none group-hover:text-primary transition-colors">管理员</p>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Super Admin</p>
+              <p className="text-sm font-black text-slate-900 leading-none group-hover:text-primary transition-colors">{userName}</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{userRole}</p>
             </div>
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/20 border border-white/20 group-hover:scale-105 transition-transform">
               <User size={20} />

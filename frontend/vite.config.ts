@@ -19,6 +19,24 @@ export default defineConfig(({mode}) => {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
+      proxy: {
+        '/blade-auth': {
+          target: 'http://localhost:8010',
+          changeOrigin: true,
+        },
+        '/blade-system': {
+          target: 'http://localhost:8010',
+          changeOrigin: true,
+        },
+        '/blade-desk': {
+          target: 'http://localhost:8010',
+          changeOrigin: true,
+        },
+        '/blade-wms': {
+          target: 'http://localhost:8010',
+          changeOrigin: true,
+        },
+      },
     },
   };
 });

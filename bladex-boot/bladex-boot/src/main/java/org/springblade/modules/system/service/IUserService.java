@@ -79,7 +79,13 @@ public interface IUserService extends BaseService<User> {
 	 * @param tenantId
 	 * @return
 	 */
-	IPage<User> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId);
+	IPage<UserVO> selectUserPage(IPage<UserVO> page, UserVO user, Long deptId, String tenantId);
+
+	boolean submitWaterUser(UserVO user);
+
+	boolean updateWaterUser(UserVO user);
+
+	boolean removeWaterUser(String userIds);
 
 	/**
 	 * 自定义分页

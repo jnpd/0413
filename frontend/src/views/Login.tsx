@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, User, Lock, Loader2, ArrowRight, Droplets, Waves, Globe, Cpu, Activity } from 'lucide-react';
+import { Shield, User, Lock, Loader2, ArrowRight, Droplets, Cpu, Activity, TriangleAlert } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import type { PasswordLoginInput } from '../auth/sessionTypes';
+
+const loginWavePaths = [
+  "M0,160L48,176C96,192,192,224,288,224C384,224,480,192,576,165.3C672,139,768,117,864,128C960,139,1056,181,1152,186.7C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z",
+  "M0,192L48,181.3C96,171,192,149,288,160C384,171,480,213,576,213.3C672,213,768,171,864,144C960,117,1056,107,1152,128C1248,149,1344,203,1392,229.3L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z",
+  "M0,160L48,176C96,192,192,224,288,224C384,224,480,192,576,165.3C672,139,768,117,864,128C960,139,1056,181,1152,186.7C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z",
+] as const;
 
 interface LoginProps {
-  onLogin: () => void;
+  onLogin: (input: PasswordLoginInput) => Promise<void>;
+  loading?: boolean;
+  error?: string | null;
 }
 
-export const LoginView: React.FC<LoginProps> = ({ onLogin }) => {
-  const [loading, setLoading] = useState(false);
+export const LoginView: React.FC<LoginProps> = ({ onLogin, loading = false, error }) => {
+  const [username, setUsername] = useState('admin');
+  const [password, setPassword] = useState('admin');
   
   // Mouse parallax effect
   const mouseX = useMotionValue(0);
@@ -29,13 +39,12 @@ export const LoginView: React.FC<LoginProps> = ({ onLogin }) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      onLogin();
-      setLoading(false);
-    }, 1500);
+    await onLogin({
+      username,
+      password,
+    });
   };
 
   return (
@@ -49,12 +58,10 @@ export const LoginView: React.FC<LoginProps> = ({ onLogin }) => {
         <div className="absolute bottom-0 left-0 w-full opacity-20">
           <svg className="w-full h-96" viewBox="0 0 1440 320" preserveAspectRatio="none">
             <motion.path
+              d={loginWavePaths[0]}
+              initial={{ d: loginWavePaths[0] }}
               animate={{ 
-                d: [
-                  "M0,160L48,176C96,192,192,224,288,224C384,224,480,192,576,165.3C672,139,768,117,864,128C960,139,1056,181,1152,186.7C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z",
-                  "M0,192L48,181.3C96,171,192,149,288,160C384,171,480,213,576,213.3C672,213,768,171,864,144C960,117,1056,107,1152,128C1248,149,1344,203,1392,229.3L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z",
-                  "M0,160L48,176C96,192,192,224,288,224C384,224,480,192,576,165.3C672,139,768,117,864,128C960,139,1056,181,1152,186.7C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-                ]
+                d: loginWavePaths
               }}
               transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
               fill="#3b82f6"
@@ -182,9 +189,11 @@ export const LoginView: React.FC<LoginProps> = ({ onLogin }) => {
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 group-focus-within:text-primary transition-colors" size={20} />
                   <input 
                     type="text" 
-                    defaultValue="admin"
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
                     className="w-full pl-12 pr-4 py-4.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:bg-white/10 focus:border-primary/50 outline-none transition-all font-medium text-sm"
                     placeholder="请输入登录账号"
+                    autoComplete="username"
                   />
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-primary group-focus-within:w-full transition-all duration-500" />
                 </div>
@@ -205,14 +214,23 @@ export const LoginView: React.FC<LoginProps> = ({ onLogin }) => {
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-primary/30 group-focus-within:text-primary transition-colors" size={20} />
                   <input 
                     type="password" 
-                    defaultValue="123456"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
                     className="w-full pl-12 pr-4 py-4.5 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:bg-white/10 focus:border-primary/50 outline-none transition-all font-medium text-sm"
                     placeholder="请输入登录密码"
+                    autoComplete="current-password"
                   />
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-primary group-focus-within:w-full transition-all duration-500" />
                 </div>
               </motion.div>
             </div>
+
+            {error ? (
+              <div className="rounded-2xl border border-rose-400/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-100 flex items-start gap-3">
+                <TriangleAlert size={18} className="mt-0.5 shrink-0 text-rose-300" />
+                <span>{error}</span>
+              </div>
+            ) : null}
 
             <div className="flex items-center justify-between text-xs">
               <motion.label 
@@ -236,7 +254,7 @@ export const LoginView: React.FC<LoginProps> = ({ onLogin }) => {
 
             <button 
               type="submit"
-              disabled={loading}
+              disabled={loading || !username.trim() || !password}
               className="w-full py-5 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold flex items-center justify-center gap-3 transition-all relative overflow-hidden group disabled:opacity-70 shadow-[0_10px_30px_-10px_rgba(0,85,150,0.5)]"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />

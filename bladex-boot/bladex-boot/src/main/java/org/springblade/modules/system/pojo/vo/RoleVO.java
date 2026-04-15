@@ -80,4 +80,9 @@ public class RoleVO extends Role implements INode<RoleVO> {
 	 * 上级角色
 	 */
 	private String parentName;
+
+	/**
+	 * 查询时需要排除的角色别名
+	 */
+	private List<String> excludeRoleAliases;
 }

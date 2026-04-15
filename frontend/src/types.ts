@@ -82,6 +82,7 @@ export interface Enterprise {
   code: string;
   /** 企业类型：水务公司 / 水表厂（设备页“所属水厂”暂复用水表厂口径） */
   type: EnterpriseType;
+  adminUserId?: string;
   adminName: string;
   /** 企业管理员登录账号 */
   adminUsername?: string;
@@ -94,16 +95,22 @@ export interface Enterprise {
 export interface Role {
   id: string;
   name: string;
-  description: string;
+  alias?: string;
+  description?: string;
   permissions: string[];
+  status?: 'active' | 'disabled';
 }
 
 export interface UserAccount {
   id: string;
   username: string;
   realName: string;
+  roleId?: string;
   role: string;
   enterpriseId: string;
+  enterpriseName?: string;
+  isAdmin?: boolean;
+  primaryAdmin?: boolean;
   status: 'active' | 'disabled';
   lastLogin: string;
 }

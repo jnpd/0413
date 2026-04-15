@@ -200,7 +200,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 				throw new ServiceException("无权限创建超管角色！");
 			}
 		}
-		if (Func.isEmpty(role.getParentId())) {
+		if (Func.isEmpty(role.getParentId()) || Func.toLong(role.getParentId()) <= 0L) {
 			role.setTenantId(AuthUtil.getTenantId());
 			role.setParentId(BladeConstant.TOP_PARENT_ID);
 		}

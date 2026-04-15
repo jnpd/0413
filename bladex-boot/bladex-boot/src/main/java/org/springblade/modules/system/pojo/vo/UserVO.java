@@ -25,7 +25,7 @@
  */
 package org.springblade.modules.system.pojo.vo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,13 +57,15 @@ public class UserVO extends User {
 	/**
 	 * 密码
 	 */
-	@JsonIgnore
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
 	/**
 	 * 租户名
 	 */
 	private String tenantName;
+
+	private String keyword;
 
 	/**
 	 * 用户平台名
@@ -94,4 +96,15 @@ public class UserVO extends User {
 	 * 拓展信息
 	 */
 	private String userExt;
+
+	@JsonSerialize(using = ToStringSerializer.class)
+	private Long enterpriseId;
+
+	private String enterpriseName;
+
+	private Integer isAdmin;
+
+	private String lastLoginTime;
+
+	private Integer primaryAdmin;
 }

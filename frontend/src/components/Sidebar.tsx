@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { 
   Database, 
   Warehouse, 
@@ -12,56 +12,42 @@ import {
   ChevronDown,
   Building2,
   Users,
+  CircleHelp,
 } from 'lucide-react';
-import { ViewType } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
+import type { LucideIcon } from 'lucide-react';
+import type { SidebarGroup, SidebarItem } from '../router/menuTypes';
 
 interface SidebarProps {
-  currentView: ViewType;
-  onViewChange: (view: ViewType) => void;
+  currentPath: string;
+  groups: SidebarGroup[];
+  onNavigate: (path: string) => void;
 }
 
-interface MenuItem {
-  id: ViewType;
-  label: string;
-  icon: any;
-}
-
-interface MenuGroup {
-  label: string;
-  items: MenuItem[];
-}
-
-const menuGroups: MenuGroup[] = [
-  {
-    label: '生产系统',
-    items: [
-      { id: 'archive', label: '表具档案', icon: Database },
-       { id: 'batch-management', label: '批次管理', icon: Layers },
-      { id: 'warehouse', label: '仓库管理', icon: Warehouse },
-      { id: 'testing', label: '批量测试', icon: Activity },
-      { id: 'history', label: '批量测试历史', icon: HistoryIcon },
-      { id: 'packaging', label: '包装管理', icon: Package },
-    ]
-  },
-  {
-    label: '公告模块',
-    items: [
-      { id: 'announcement', label: '公告管理', icon: Bell },
-    ]
-  },
-  {
-    label: '系统管理',
-    items: [
-      { id: 'enterprise', label: '账户管理', icon: Building2 },
-      { id: 'user-account', label: '人员管理', icon: Users },
-      { id: 'role-management', label: '角色管理', icon: ShieldCheck },
-    ]
-  }
+const itemIconMap: Array<{ match: (item: SidebarItem) => boolean; icon: LucideIcon }> = [
+  { match: (item) => item.path.includes('/archive/'), icon: Database },
+  { match: (item) => item.path.includes('/warehouse/'), icon: Warehouse },
+  { match: (item) => item.path.includes('/batchManagement/'), icon: Layers },
+  { match: (item) => item.path.includes('/batchTesting/index'), icon: Activity },
+  { match: (item) => item.path.includes('/batchTestingHistory/'), icon: HistoryIcon },
+  { match: (item) => item.path.includes('/Packaging/'), icon: Package },
+  { match: (item) => item.path.includes('/notice/'), icon: Bell },
+  { match: (item) => item.path.includes('/account/account-management/'), icon: Building2 },
+  { match: (item) => item.path.includes('/account/user-account/'), icon: Users },
+  { match: (item) => item.path.includes('/account/role-management/'), icon: ShieldCheck },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['生产系统', '公告模块', '系统管理']);
+function resolveItemIcon(item: SidebarItem): LucideIcon {
+  return itemIconMap.find((entry) => entry.match(item))?.icon ?? CircleHelp;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ currentPath, groups, onNavigate }) => {
+  const groupLabels = useMemo(() => groups.map((group) => group.label), [groups]);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(groupLabels);
+
+  useEffect(() => {
+    setExpandedGroups(groupLabels);
+  }, [groupLabels]);
 
   const toggleGroup = (label: string) => {
     setExpandedGroups(prev => 
@@ -86,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
       </div>
       
       <nav className="flex-1 overflow-y-auto py-2 scrollbar-hide relative">
-        {menuGroups.map(group => (
+        {groups.map(group => (
           <div key={group.label} className="mb-2">
             <button 
               onClick={() => toggleGroup(group.label)}
@@ -111,12 +97,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
                   className="overflow-hidden mt-1"
                 >
                   {group.items.map(item => {
-                    const isActive = currentView === item.id;
+                    const isActive = currentPath === item.path;
+                    const Icon = resolveItemIcon(item);
 
                     return (
-                      <div key={item.id} className="px-3">
+                      <div key={item.key} className="px-3">
                         <button
-                          onClick={() => onViewChange(item.id)}
+                          onClick={() => onNavigate(item.path)}
                           className={`w-full px-4 py-2 flex items-center gap-3 transition-all duration-300 rounded-xl group relative mb-0.5 ${
                             isActive
                               ? 'bg-primary text-white shadow-lg shadow-primary/20' 
@@ -126,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
                           <div className={`p-1.5 rounded-lg transition-colors ${
                             isActive ? 'bg-white/20' : 'bg-white/5 group-hover:bg-white/10'
                           }`}>
-                            <item.icon size={16} className={isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'} />
+                            <Icon size={16} className={isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'} />
                           </div>
                           <span className="flex-1 text-left text-[13px] font-bold tracking-tight">{item.label}</span>
                         </button>

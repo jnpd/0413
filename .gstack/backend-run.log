@@ -1,0 +1,46 @@
+Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective settings
+[WARNING] Unrecognised tag: 'servers' (position: START_TAG seen ...</server>\r\n  <servers>... @39:12)  @ D:\jetbin\apache-maven-3.8.7\conf\settings.xml, line 39, column 12
+[WARNING] 
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< org.springblade:BladeX-Boot >---------------------
+[INFO] Building BladeX-Boot 4.8.0.RELEASE
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:3.2.10:run (default-cli) > test-compile @ BladeX-Boot >>>
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ BladeX-Boot ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 32 resources
+[INFO] Copying 43 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.14.1:compile (default-compile) @ BladeX-Boot ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ BladeX-Boot ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 15 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.14.1:testCompile (default-testCompile) @ BladeX-Boot ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:3.2.10:run (default-cli) < test-compile @ BladeX-Boot <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:3.2.10:run (default-cli) @ BladeX-Boot ---
+[INFO] Attaching agents: []
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  9.438 s
+[INFO] Finished at: 2026-04-14T18:04:30+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.2.10:run (default-cli) on project BladeX-Boot: Process execution failed: Cannot run program "D:\jetbin\jdk-17\bin\java.exe" (in directory "E:\demo0413\bladex-boot\bladex-boot"): CreateProcess error=206, 文件名或扩展名太长。 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

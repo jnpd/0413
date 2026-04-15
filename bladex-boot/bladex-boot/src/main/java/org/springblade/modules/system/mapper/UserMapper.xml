@@ -27,28 +27,88 @@
         <result column="post_id" property="postId"/>
     </resultMap>
 
-    <select id="selectUserPage" resultMap="userResultMap">
-        select * from blade_user where is_deleted = 0
+    <resultMap id="userPageResultMap" type="org.springblade.modules.system.pojo.vo.UserVO">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="code" property="code"/>
+        <result column="user_type" property="userType"/>
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="name" property="name"/>
+        <result column="real_name" property="realName"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="birthday" property="birthday"/>
+        <result column="sex" property="sex"/>
+        <result column="role_id" property="roleId"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="post_id" property="postId"/>
+        <result column="enterprise_id" property="enterpriseId"/>
+        <result column="enterprise_name" property="enterpriseName"/>
+        <result column="is_admin" property="isAdmin"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="primary_admin" property="primaryAdmin"/>
+        <result column="role_name" property="roleName"/>
+    </resultMap>
+
+    <select id="selectUserPage" resultMap="userPageResultMap">
+        select
+            bu.*,
+            bue.enterprise_id,
+            be.enterprise_name,
+            bue.is_admin,
+            null as last_login_time,
+            case when be.admin_user_id = bu.id then 1 else 0 end as primary_admin,
+            br.role_name
+        from blade_user bu
+        inner join biz_user_enterprise bue on bue.user_id = bu.id and bue.is_deleted = 0
+        left join biz_enterprise be on be.enterprise_id = bue.enterprise_id and be.is_deleted = 0
+        left join blade_role br on br.id = cast(bu.role_id as signed) and br.is_deleted = 0
+        where bu.is_deleted = 0
         <if test="tenantId!=null and tenantId != ''">
-            and tenant_id = #{tenantId}
+            and bu.tenant_id = #{tenantId}
         </if>
         <if test="user.tenantId!=null and user.tenantId != ''">
-            and tenant_id = #{user.tenantId}
+            and bu.tenant_id = #{user.tenantId}
+        </if>
+        <if test="user.keyword!=null and user.keyword != ''">
+            and (
+                bu.account like concat('%', #{user.keyword}, '%')
+                or bu.real_name like concat('%', #{user.keyword}, '%')
+            )
         </if>
         <if test="user.account!=null and user.account != ''">
-            and account = #{user.account}
+            and bu.account = #{user.account}
         </if>
         <if test="user.realName!=null and user.realName != ''">
-            and real_name = #{user.realName}
+            and bu.real_name = #{user.realName}
         </if>
         <if test="user.userType!=null and user.userType != ''">
-            and user_type = #{user.userType}
+            and bu.user_type = #{user.userType}
         </if>
         <if test="user.status!=null and user.status>=0">
-            and status = #{user.status}
+            and bu.status = #{user.status}
+        </if>
+        <if test="user.enterpriseId!=null">
+            and bue.enterprise_id = #{user.enterpriseId}
+        </if>
+        <if test="user.isAdmin!=null">
+            and bue.is_admin = #{user.isAdmin}
+        </if>
+        <if test="accessibleEnterpriseIds!=null and accessibleEnterpriseIds.size>0">
+            and bue.enterprise_id in
+            <foreach collection="accessibleEnterpriseIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </if>
         <if test="deptIdList!=null and deptIdList.size>0">
-            and id in (
+            and bu.id in (
                 SELECT
                     user_id
                 FROM
@@ -60,7 +120,7 @@
                 </foreach>
             )
         </if>
-        ORDER BY id
+        ORDER BY bu.id desc
     </select>
 
     <select id="getUser" resultMap="userResultMap">

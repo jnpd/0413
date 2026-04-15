@@ -1,0 +1,23 @@
+{
+  "skill_name": "migrating-saber-auth-rbac-to-react",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "把 E:\\work\\WaterManger\\Saber3-master 里的登录、token 刷新、动态菜单、按钮权限完整迁移到 E:\\work\\WaterManger\\frontEnd，保留现有 React 页面视觉风格，但让界面真的走后端接口。",
+      "expected_output": "Agent should add the missing React integration substrate first, then wire real auth, menu, route, and button-permission behavior without copying Vue files directly.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "frontEnd 里的 Login.tsx 还是 setTimeout 假登录，Sidebar/menuConfig.ts 也是写死的，Permissions.tsx 还在用 mockUsers 和 mockRoles。把它们改成复用 Saber3-master 的接口能力。",
+      "expected_output": "Agent should identify these files as migration hotspots, replace fake login and static menus, and wire user and role APIs into the permissions view.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "这个 React 原型没有 axios 和 react-router-dom，但我需要接入旧系统的 token、刷新、动态路由和菜单权限。请直接按安全顺序改，不要只给方案。",
+      "expected_output": "Agent should add the missing infrastructure, mention new dependencies, create a route/menu adapter, and validate auth plus permission flows.",
+      "files": []
+    }
+  ]
+}

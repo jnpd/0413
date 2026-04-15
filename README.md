@@ -23,7 +23,7 @@
 | 模块 | 作用 | 样板文档 |
 |---|---|---|
 | 批量测试历史与检验台闭环 | 作为首个高风险样板 feature | `openspec/changes/testing-history-inspection-closure/` |
-| 接口规范 | 冻结返回结构、错误语义、鉴权责任 | `docs/02-business-rules/接口规范.md` |
+| 接口规范 | 冻结返回结构、错误语义、鉴权责任 | `docs/02-rules/接口规范.md` |
 | 测试场景 | 冻结主链路、异常、回归点 | `docs/06-release-ops/核心测试场景库.md` |
 
 ## 快速导航
@@ -37,10 +37,12 @@
 - Agent 规则：`AGENTS.md`
 - 项目概览：`docs/01-overview/项目概览.md`
 - 模块地图：`docs/01-overview/模块地图.md`
-- 业务规则选路：`docs/02-business-rules/业务规则选路索引.md`
+- 规则总览：`docs/02-rules/README.md`
+- 业务规则选路：`docs/02-rules/业务规则选路索引.md`
+- 前端实现规范：`docs/02-rules/前端实现规范.md`
 - 系统架构：`docs/03-architecture/系统架构总览.md`
-- 数据真源归档：`docs/04-data-model/README.md`
-- 核心实体：`docs/04-data-model/核心实体说明.md`
+- 数据真源归档：`docs/04-modules/README.md`
+- 核心实体：`docs/04-modules/核心实体说明.md`
 - 通用契约索引：`docs/00-meta/通用契约索引.md`
 
 ## 当前技术口径
@@ -54,10 +56,12 @@
 当前仓库要区分“当前落盘”与“starter 目标态”：
 
 - 当前落盘
+  - `changes/2026-04/_index.md`
+    - 月份入口索引，只负责按时间找 change
   - `changes/2026-04/<feature>/proposal.md`
-    - starter 风格 proposal 镜像入口
+    - 该 feature 的唯一 proposal 文档
   - `openspec/changes/<feature>/`
-    - 当前真实 feature 规格包，按现状存放 `proposal.md`、`design.md`、`tasks.md`、`test-cases.md`、`acceptance.md`、`contracts/`、`specs/`
+    - 该 feature 的 canonical spec 真源，只存放 `design.md`、`tasks.md`、`test-cases.md`、`acceptance.md`、`contracts/`、`specs/`
 - `docs/`
     - 项目级知识，不把 feature 级细节塞进项目总览
 - `docs/00-03/`

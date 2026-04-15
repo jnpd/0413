@@ -44,6 +44,7 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.IsAdmin;
+import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tenant.annotation.NonDS;
 import org.springblade.core.tool.api.R;
@@ -80,6 +81,7 @@ public class UserController {
 	/**
 	 * 查询单条
 	 */
+	@PreAuth(menu = "dept")
 	@IsAdmin
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
@@ -103,6 +105,7 @@ public class UserController {
 	/**
 	 * 用户列表
 	 */
+	@PreAuth(menu = "dept")
 	@IsAdmin
 	@GetMapping("/list")
 	@Parameters({
@@ -120,7 +123,7 @@ public class UserController {
 	/**
 	 * 自定义用户列表
 	 */
-	@IsAdmin
+	@PreAuth(menu = "dept")
 	@GetMapping("/page")
 	@Parameters({
 		@Parameter(name = "account", description = "账号名", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
@@ -128,48 +131,48 @@ public class UserController {
 	})
 	@ApiOperationSupport(order = 3)
 	@Operation(summary = "列表", description = "传入account和realName")
-	public R<IPage<UserVO>> page(@Parameter(hidden = true) User user, Query query, Long deptId, BladeUser bladeUser) {
-		IPage<User> pages = userService.selectUserPage(Condition.getPage(query), user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
-		return R.data(UserWrapper.build().pageVO(pages));
+	public R<IPage<UserVO>> page(@Parameter(hidden = true) UserVO user, Query query, Long deptId, BladeUser bladeUser) {
+		IPage<UserVO> pages = userService.selectUserPage(Condition.getPage(query), user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
+		return R.data(pages);
 	}
 
 	/**
 	 * 新增或修改
 	 */
-	@IsAdmin
+	@PreAuth(menu = "dept")
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 4)
 	@Operation(summary = "新增或修改", description = "传入User")
-	public R submit(@Valid @RequestBody User user) {
-		return R.status(userService.submit(user));
+	public R submit(@Valid @RequestBody UserVO user) {
+		return R.status(userService.submitWaterUser(user));
 	}
 
 	/**
 	 * 修改
 	 */
-	@IsAdmin
+	@PreAuth(menu = "dept")
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
 	@Operation(summary = "修改", description = "传入User")
-	public R update(@Valid @RequestBody User user) {
-		return R.status(userService.updateUser(user));
+	public R update(@Valid @RequestBody UserVO user) {
+		return R.status(userService.updateWaterUser(user));
 	}
 
 	/**
 	 * 删除
 	 */
-	@IsAdmin
+	@PreAuth(menu = "dept")
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 6)
 	@Operation(summary = "删除", description = "传入id集合")
 	public R remove(@RequestParam String ids) {
-		return R.status(userService.removeUser(ids));
+		return R.status(userService.removeWaterUser(ids));
 	}
 
 	/**
 	 * 设置菜单权限
 	 */
-	@IsAdmin
+	@PreAuth(menu = "dept")
 	@PostMapping("/grant")
 	@ApiOperationSupport(order = 7)
 	@Operation(summary = "权限设置", description = "传入roleId集合以及menuId集合")

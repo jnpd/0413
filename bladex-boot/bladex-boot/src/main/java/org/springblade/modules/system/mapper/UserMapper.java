@@ -31,6 +31,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 import org.springblade.modules.system.excel.UserExcel;
 import org.springblade.modules.system.pojo.entity.User;
+import org.springblade.modules.system.pojo.vo.UserVO;
 
 import java.util.List;
 
@@ -50,7 +51,11 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @param tenantId
 	 * @return
 	 */
-	List<User> selectUserPage(IPage<User> page, @Param("user") User user, @Param("deptIdList") List<Long> deptIdList, @Param("tenantId") String tenantId);
+	List<UserVO> selectUserPage(IPage<UserVO> page,
+		@Param("user") UserVO user,
+		@Param("deptIdList") List<Long> deptIdList,
+		@Param("tenantId") String tenantId,
+		@Param("accessibleEnterpriseIds") List<Long> accessibleEnterpriseIds);
 
 	/**
 	 * 获取用户

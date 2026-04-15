@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.modules.system.mapper.EnterpriseMapper">
+
+    <resultMap id="enterpriseVoResultMap" type="org.springblade.modules.system.pojo.vo.EnterpriseVO">
+        <id column="enterprise_id" property="enterpriseId"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="enterprise_name" property="enterpriseName"/>
+        <result column="enterprise_code" property="enterpriseCode"/>
+        <result column="enterprise_type" property="enterpriseType"/>
+        <result column="admin_user_id" property="adminUserId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="admin_name" property="adminName"/>
+        <result column="login_account" property="loginAccount"/>
+    </resultMap>
+
+    <sql id="enterpriseColumns">
+        be.enterprise_id,
+        be.tenant_id,
+        be.enterprise_name,
+        be.enterprise_code,
+        be.enterprise_type,
+        be.admin_user_id,
+        be.create_user,
+        be.create_time,
+        be.update_user,
+        be.update_time,
+        be.status,
+        be.is_deleted,
+        bu.real_name as admin_name,
+        bu.account as login_account
+    </sql>
+
+    <sql id="enterpriseAccessWhere">
+        be.is_deleted = 0
+        <if test="tenantId != null and tenantId != ''">
+            and be.tenant_id = #{tenantId}
+        </if>
+        <if test="accessibleUserId != null">
+            and exists (
+                select 1
+                from biz_user_enterprise current_rel
+                where current_rel.enterprise_id = be.enterprise_id
+                  and current_rel.user_id = #{accessibleUserId}
+                  and current_rel.status = 1
+                  and current_rel.is_deleted = 0
+            )
+        </if>
+    </sql>
+
+    <select id="selectEnterprisePage" resultMap="enterpriseVoResultMap">
+        select
+        <include refid="enterpriseColumns"/>
+        from biz_enterprise be
+        left join blade_user bu on bu.id = be.admin_user_id and bu.is_deleted = 0
+        where
+        <include refid="enterpriseAccessWhere"/>
+        <if test="enterprise.keyword != null and enterprise.keyword != ''">
+            and (
+                be.enterprise_name like concat('%', #{enterprise.keyword}, '%')
+                or bu.real_name like concat('%', #{enterprise.keyword}, '%')
+                or bu.account like concat('%', #{enterprise.keyword}, '%')
+            )
+        </if>
+        <if test="enterprise.enterpriseType != null">
+            and be.enterprise_type = #{enterprise.enterpriseType}
+        </if>
+        <if test="enterprise.status != null">
+            and be.status = #{enterprise.status}
+        </if>
+        order by be.enterprise_id desc
+    </select>
+
+    <select id="selectEnterpriseDetail" resultMap="enterpriseVoResultMap">
+        select
+        <include refid="enterpriseColumns"/>
+        from biz_enterprise be
+        left join blade_user bu on bu.id = be.admin_user_id and bu.is_deleted = 0
+        where
+        <include refid="enterpriseAccessWhere"/>
+        and be.enterprise_id = #{enterpriseId}
+        limit 1
+    </select>
+
+    <select id="selectEnterpriseList" resultMap="enterpriseVoResultMap">
+        select
+        <include refid="enterpriseColumns"/>
+        from biz_enterprise be
+        left join blade_user bu on bu.id = be.admin_user_id and bu.is_deleted = 0
+        where
+        <include refid="enterpriseAccessWhere"/>
+        and be.status = 1
+        order by be.enterprise_id desc
+    </select>
+
+    <select id="countActiveNonAdminUsers" resultType="long">
+        select count(1)
+        from biz_user_enterprise bue
+        inner join blade_user bu on bu.id = bue.user_id
+        where bue.enterprise_id = #{enterpriseId}
+          and bue.is_admin = 0
+          and bue.status = 1
+          and bue.is_deleted = 0
+          and bu.status = 1
+          and bu.is_deleted = 0
+    </select>
+
+    <select id="selectRelatedUserIds" resultType="long">
+        select distinct user_id
+        from biz_user_enterprise
+        where enterprise_id = #{enterpriseId}
+          and is_deleted = 0
+    </select>
+</mapper>

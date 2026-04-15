@@ -5,10 +5,23 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="roleResultMap" type="org.springblade.modules.system.pojo.entity.Role">
         <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
         <result column="parent_id" property="parentId"/>
         <result column="role_name" property="roleName"/>
         <result column="sort" property="sort"/>
         <result column="role_alias" property="roleAlias"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+    <resultMap id="rolePageResultMap" type="org.springblade.modules.system.pojo.vo.RoleVO">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="sort" property="sort"/>
+        <result column="role_alias" property="roleAlias"/>
+        <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
     </resultMap>
 
@@ -20,8 +33,28 @@
         <result column="key" property="key"/>
     </resultMap>
 
-    <select id="selectRolePage" resultMap="roleResultMap">
-        select * from blade_role where is_deleted = 0
+    <select id="selectRolePage" resultMap="rolePageResultMap">
+        select * from blade_role
+        where is_deleted = 0
+        <if test="role.tenantId != null and role.tenantId != ''">
+            and tenant_id = #{role.tenantId}
+        </if>
+        <if test="role.roleName != null and role.roleName != ''">
+            and role_name like concat('%', #{role.roleName}, '%')
+        </if>
+        <if test="role.roleAlias != null and role.roleAlias != ''">
+            and role_alias like concat('%', #{role.roleAlias}, '%')
+        </if>
+        <if test="role.status != null">
+            and status = #{role.status}
+        </if>
+        <if test="role.excludeRoleAliases != null and role.excludeRoleAliases.size() > 0">
+            and role_alias not in
+            <foreach collection="role.excludeRoleAliases" item="alias" open="(" separator="," close=")">
+                #{alias}
+            </foreach>
+        </if>
+        order by id desc
     </select>
 
     <select id="tree" resultMap="treeNodeResultMap">

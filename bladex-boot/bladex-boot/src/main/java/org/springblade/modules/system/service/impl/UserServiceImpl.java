@@ -51,11 +51,14 @@ import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.*;
 import org.springblade.modules.auth.provider.UserType;
 import org.springblade.modules.system.excel.UserExcel;
+import org.springblade.modules.system.mapper.EnterpriseMapper;
 import org.springblade.modules.system.mapper.UserMapper;
 import org.springblade.modules.system.pojo.entity.*;
+import org.springblade.modules.system.pojo.vo.EnterpriseVO;
 import org.springblade.modules.system.pojo.vo.UserVO;
 import org.springblade.modules.system.service.IRoleService;
 import org.springblade.modules.system.service.IUserDeptService;
+import org.springblade.modules.system.service.IUserEnterpriseService;
 import org.springblade.modules.system.service.IUserOauthService;
 import org.springblade.modules.system.service.IUserService;
 import org.springblade.modules.system.wrapper.UserWrapper;
@@ -84,6 +87,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	private final IUserDeptService userDeptService;
 	private final IUserOauthService userOauthService;
 	private final IRoleService roleService;
+	private final IUserEnterpriseService userEnterpriseService;
+	private final EnterpriseMapper enterpriseMapper;
 	private final BladeTenantProperties tenantProperties;
 	private final BladeRedis bladeRedis;
 
@@ -144,6 +149,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		if (phoneCount > 0L && StringUtil.isNotBlank(user.getPhone())) {
 			throw new ServiceException(StringUtil.format("当前手机 [{}] 已存在!", user.getPhone()));
 		}
+		if (Func.isNotEmpty(user.getPassword())) {
+			user.setPassword(DigestUtil.encrypt(user.getPassword()));
+		} else {
+			user.setPassword(null);
+		}
 		CacheUtil.clear(USER_CACHE);
 		return submitUserInfo(user) && submitUserDept(user);
 	}
@@ -178,6 +188,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 	private boolean submitUserDept(User user) {
 		List<Long> deptIdList = Func.toLongList(user.getDeptId());
+		if (Func.isEmpty(deptIdList)) {
+			return true;
+		}
 		List<UserDept> userDeptList = new ArrayList<>();
 		deptIdList.forEach(deptId -> {
 			UserDept userDept = new UserDept();
@@ -190,9 +203,15 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	}
 
 	@Override
-	public IPage<User> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId) {
-		List<Long> deptIdList = SysCache.getDeptChildIds(deptId);
-		return page.setRecords(baseMapper.selectUserPage(page, user, deptIdList, tenantId));
+	public IPage<UserVO> selectUserPage(IPage<UserVO> page, UserVO user, Long deptId, String tenantId) {
+		List<Long> deptIdList = Func.isNotEmpty(deptId) ? SysCache.getDeptChildIds(deptId) : null;
+		List<Long> accessibleEnterpriseIds = isPlatformAdmin() ? null : userEnterpriseService.activeEnterpriseIds(AuthUtil.getUserId());
+		if (!isPlatformAdmin() && Func.isEmpty(accessibleEnterpriseIds)) {
+			page.setRecords(Collections.emptyList());
+			page.setTotal(0);
+			return page;
+		}
+		return page.setRecords(baseMapper.selectUserPage(page, user, deptIdList, tenantId, accessibleEnterpriseIds));
 	}
 
 	@Override
@@ -367,7 +386,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			throw new ServiceException("不能删除本账号!");
 		}
 		boolean tempUser = this.deleteLogic(Func.toLongList(userIds));
-		boolean tempUserDept = userDeptService.remove(Wrappers.<UserDept>lambdaQuery().in(UserDept::getUserId, Func.toLongList(userIds)));
+		long userDeptCount = userDeptService.count(Wrappers.<UserDept>lambdaQuery().in(UserDept::getUserId, Func.toLongList(userIds)));
+		boolean tempUserDept = userDeptCount == 0L || userDeptService.remove(Wrappers.<UserDept>lambdaQuery().in(UserDept::getUserId, Func.toLongList(userIds)));
 		if (tempUser && tempUserDept) {
 			UserOauth userOauth = new UserOauth();
 			userOauth.delete(Wrappers.<UserOauth>lambdaQuery().in(UserOauth::getUserId, Func.toLongList(userIds)));
@@ -382,6 +402,84 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		} else {
 			throw new ServiceException("删除用户失败!");
 		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean submitWaterUser(UserVO user) {
+		Long enterpriseId = resolveWritableEnterpriseId(user.getEnterpriseId());
+		Enterprise enterprise = loadAccessibleEnterprise(enterpriseId);
+
+		User target = new User();
+		target.setTenantId(currentTenantId());
+		target.setAccount(user.getAccount());
+		target.setRealName(user.getRealName());
+		target.setName(StringUtil.isNotBlank(user.getName()) ? user.getName() : user.getRealName());
+		target.setStatus(Func.toInt(user.getStatus(), BladeConstant.DB_STATUS_NORMAL));
+		target.setPassword(user.getPassword());
+		target.setRoleId(resolveWaterUserRoleId(user, enterprise));
+
+		boolean adminUser = Func.toInt(user.getIsAdmin(), 0) == BladeConstant.DB_STATUS_NORMAL;
+		if (!submit(target)) {
+			throw new ServiceException("保存用户失败");
+		}
+		replaceUserEnterpriseRelation(target.getId(), enterprise.getEnterpriseId(), adminUser, target.getStatus());
+		return true;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean updateWaterUser(UserVO user) {
+		if (Func.isEmpty(user.getId())) {
+			throw new ServiceException("用户ID不能为空");
+		}
+		if (isPrimaryEnterpriseAdmin(user.getId())) {
+			throw new ServiceException("主管理员不能在人员管理中编辑");
+		}
+		assertUserAccessible(user.getId());
+
+		Long enterpriseId = resolveWritableEnterpriseId(user.getEnterpriseId());
+		Enterprise enterprise = loadAccessibleEnterprise(enterpriseId);
+		User target = new User();
+		target.setId(user.getId());
+		target.setTenantId(currentTenantId());
+		target.setAccount(user.getAccount());
+		target.setRealName(user.getRealName());
+		target.setName(StringUtil.isNotBlank(user.getName()) ? user.getName() : user.getRealName());
+		target.setStatus(Func.toInt(user.getStatus(), BladeConstant.DB_STATUS_NORMAL));
+		target.setPassword(StringUtil.isNotBlank(user.getPassword()) ? user.getPassword() : null);
+		target.setRoleId(resolveWaterUserRoleId(user, enterprise));
+
+		boolean adminUser = Func.toInt(user.getIsAdmin(), 0) == BladeConstant.DB_STATUS_NORMAL;
+		if (!updateUser(target)) {
+			throw new ServiceException("更新用户失败");
+		}
+		replaceUserEnterpriseRelation(user.getId(), enterprise.getEnterpriseId(), adminUser, target.getStatus());
+		return true;
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean removeWaterUser(String userIds) {
+		List<Long> ids = Func.toLongList(userIds);
+		for (Long userId : ids) {
+			if (Func.equals(userId, AuthUtil.getUserId())) {
+				throw new ServiceException("当前登录用户不可删除自身账号");
+			}
+			if (isPrimaryEnterpriseAdmin(userId)) {
+				throw new ServiceException("主管理员不能在人员管理中删除");
+			}
+			assertUserAccessible(userId);
+		}
+
+		userEnterpriseService.update(
+			Wrappers.<UserEnterprise>lambdaUpdate()
+				.set(UserEnterprise::getStatus, 0)
+				.set(UserEnterprise::getIsDeleted, BladeConstant.DB_IS_DELETED)
+				.in(UserEnterprise::getUserId, ids)
+				.eq(UserEnterprise::getIsDeleted, BladeConstant.DB_NOT_DELETED)
+		);
+		return removeUser(userIds);
 	}
 
 	@Override
@@ -428,6 +526,116 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			user.setPostName(StringUtil.join(SysCache.getPostNames(user.getPostId())));
 		});
 		return userList;
+	}
+
+	private Enterprise loadAccessibleEnterprise(Long enterpriseId) {
+		EnterpriseVO enterprise = enterpriseMapper.selectEnterpriseDetail(enterpriseId, currentTenantId(), isPlatformAdmin() ? null : AuthUtil.getUserId());
+		if (enterprise == null) {
+			throw new ServiceException("所属企业不存在或无权访问");
+		}
+		Enterprise detail = enterpriseMapper.selectById(enterpriseId);
+		if (detail == null) {
+			throw new ServiceException("所属企业不存在");
+		}
+		return detail;
+	}
+
+	private Long resolveWritableEnterpriseId(Long requestedEnterpriseId) {
+		if (isPlatformAdmin()) {
+			if (Func.isEmpty(requestedEnterpriseId)) {
+				throw new ServiceException("所属企业不能为空");
+			}
+			return requestedEnterpriseId;
+		}
+		List<Long> accessibleEnterpriseIds = userEnterpriseService.activeEnterpriseIds(AuthUtil.getUserId());
+		if (Func.isEmpty(accessibleEnterpriseIds)) {
+			throw new ServiceException("当前用户未绑定可操作企业");
+		}
+		if (Func.isEmpty(requestedEnterpriseId)) {
+			return accessibleEnterpriseIds.get(0);
+		}
+		if (!accessibleEnterpriseIds.contains(requestedEnterpriseId)) {
+			throw new ServiceException("无权写入目标企业");
+		}
+		return requestedEnterpriseId;
+	}
+
+	private String resolveWaterUserRoleId(UserVO user, Enterprise enterprise) {
+		if (Func.toInt(user.getIsAdmin(), 0) == BladeConstant.DB_STATUS_NORMAL) {
+			String roleAlias = Func.toInt(enterprise.getEnterpriseType(), 0) == 2 ? "water_factory_admin" : "water_company_admin";
+			Role role = roleService.getOne(Wrappers.<Role>lambdaQuery()
+				.eq(Role::getTenantId, currentTenantId())
+				.eq(Role::getRoleAlias, roleAlias)
+				.eq(Role::getStatus, BladeConstant.DB_STATUS_NORMAL)
+				.eq(Role::getIsDeleted, BladeConstant.DB_NOT_DELETED)
+				.last("limit 1"));
+			if (role == null || Func.isEmpty(role.getId())) {
+				throw new ServiceException("未找到企业管理员角色");
+			}
+			return Func.toStr(role.getId());
+		}
+		if (StringUtil.isBlank(user.getRoleId())) {
+			throw new ServiceException("所属角色不能为空");
+		}
+		return user.getRoleId();
+	}
+
+	private void replaceUserEnterpriseRelation(Long userId, Long enterpriseId, boolean adminUser, Integer status) {
+		userEnterpriseService.update(
+			Wrappers.<UserEnterprise>lambdaUpdate()
+				.set(UserEnterprise::getStatus, 0)
+				.set(UserEnterprise::getIsDeleted, BladeConstant.DB_IS_DELETED)
+				.eq(UserEnterprise::getUserId, userId)
+				.eq(UserEnterprise::getIsDeleted, BladeConstant.DB_NOT_DELETED)
+		);
+
+		UserEnterprise relation = userEnterpriseService.getOne(
+			Wrappers.<UserEnterprise>lambdaQuery()
+				.eq(UserEnterprise::getUserId, userId)
+				.eq(UserEnterprise::getEnterpriseId, enterpriseId)
+				.last("limit 1")
+		);
+		if (relation == null) {
+			relation = new UserEnterprise();
+		}
+		relation.setTenantId(currentTenantId());
+		relation.setUserId(userId);
+		relation.setEnterpriseId(enterpriseId);
+		relation.setIsAdmin(adminUser ? BladeConstant.DB_STATUS_NORMAL : 0);
+		relation.setStatus(Func.toInt(status, BladeConstant.DB_STATUS_NORMAL));
+		relation.setIsDeleted(BladeConstant.DB_NOT_DELETED);
+		userEnterpriseService.saveOrUpdate(relation);
+	}
+
+	private boolean isPrimaryEnterpriseAdmin(Long userId) {
+		return enterpriseMapper.selectCount(Wrappers.<Enterprise>lambdaQuery()
+			.eq(Enterprise::getAdminUserId, userId)
+			.eq(Enterprise::getIsDeleted, BladeConstant.DB_NOT_DELETED)) > 0;
+	}
+
+	private void assertUserAccessible(Long userId) {
+		if (isPlatformAdmin()) {
+			return;
+		}
+		List<Long> accessibleEnterpriseIds = userEnterpriseService.activeEnterpriseIds(AuthUtil.getUserId());
+		long count = userEnterpriseService.count(
+			Wrappers.<UserEnterprise>lambdaQuery()
+				.eq(UserEnterprise::getUserId, userId)
+				.in(UserEnterprise::getEnterpriseId, accessibleEnterpriseIds)
+				.eq(UserEnterprise::getStatus, BladeConstant.DB_STATUS_NORMAL)
+				.eq(UserEnterprise::getIsDeleted, BladeConstant.DB_NOT_DELETED)
+		);
+		if (count == 0L) {
+			throw new ServiceException("无权操作目标用户");
+		}
+	}
+
+	private boolean isPlatformAdmin() {
+		return AuthUtil.isAdmin() || AuthUtil.isAdministrator();
+	}
+
+	private String currentTenantId() {
+		return StringUtil.isBlank(AuthUtil.getTenantId()) ? BladeConstant.ADMIN_TENANT_ID : AuthUtil.getTenantId();
 	}
 
 	@Override

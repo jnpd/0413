@@ -8,7 +8,7 @@
 
 1. 先读 `README.md` 与 `REPO_WIKI.md`
 2. 涉及仓库、环境、外部 PRD、代码分支时，先读 `docs/00-meta/外部依赖与交接说明.md`
-2.5. 涉及业务规则、字段、状态、枚举、权限、交互时，先读 `docs/02-business-rules/业务规则选路索引.md`
+2.5. 涉及业务规则、字段、状态、枚举、权限、交互时，先读 `docs/02-rules/README.md` 与 `docs/02-rules/业务规则选路索引.md`
 3. 没有规格的需求不直接开始实现
 4. 高风险改动必须说明范围、风险、测试和回滚
 5. 输出优先引用已有知识，不凭空发明业务规则
@@ -85,3 +85,26 @@
 - 是否更新知识页
 - 是否说明风险与回滚方式
 - 是否完成字段/状态/流程变更的闭环检查
+
+## 文档语言约束
+
+- `changes/<YYYY-MM>/<feature>/proposal.md` 默认必须使用中文撰写
+- `openspec/changes/<feature>/` 下的 `design.md`、`tasks.md`、`test-cases.md`、`acceptance.md`、`contracts/**/*.md`、`specs/**/*.md` 默认必须使用中文撰写
+- 只有接口路径、数据库字段名、权限码、类名、方法名、枚举值、错误码、协议字段这类稳定标识符允许保留原文
+- 若用户明确要求英文，才允许例外；未明确要求时，禁止输出英文版 canonical spec
+
+## 文档落点强约束
+
+  - `docs/00-07/` 只放项目级长期稳定知识，不放单次需求文档
+  - `changes/<YYYY-MM>/_index.md` 只做月份入口索引，按时间找 change
+  - `changes/<YYYY-MM>/<feature>/proposal.md` 是该 feature 的唯一 proposal 文档，只放 proposal
+  - `openspec/changes/<feature>/` 是该 feature 的 canonical spec 真源，只放 `design.md`、`tasks.md`、`test-cases.md`、`acceptance.md`、`contracts/`、`specs/`
+  - `openspec/changes/<feature>/` 禁止出现 `proposal.md`
+  - 禁止在 `changes/` 和 `openspec/` 同时出现同名、同职责文档，避免双真源
+  - proposal 变更只改 `changes/<YYYY-MM>/<feature>/proposal.md`
+  - spec / design / tasks / test-cases / acceptance / contracts / specs 只改 `openspec/changes/<feature>/`
+  - 禁止把 canonical 文档写到 `docs/superpowers/`、`tmp/`、`notes/` 或其他 agent 工作目录
+  - 如果 `openspec/` 不存在，先创建目录结构，再写文档
+  - 每次 change 开始前，必须先确定 `feature id`
+  - 新 change 的最小落盘顺序固定为：先建 `changes/<YYYY-MM>/<feature>/proposal.md`，再建 `openspec/changes/<feature>/` 骨架，最后在当月 `_index.md` 挂入口
+  - 每个月或每个发布版本，必须有一个 `_index.md` 或 `manifest.md`，列出当前版本包含哪些 change、每个 change 对应哪些文档
