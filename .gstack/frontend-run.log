@@ -29,3 +29,69 @@ AggregateError [ECONNREFUSED]:
 [2m19:38:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css, /@fs/E:\demo0413\frontend\src\features\system\role\RoleManagementTab.tsx, /src/features/system/enterprise/EnterpriseManagementTab.tsx, /src/features/system/user/UserManagementTab.tsx[22m
 [2m19:38:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/Header.tsx, /src/index.css[22m
 [2m19:38:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.env.example[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/auth/authApi.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/auth/grants.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/auth/sessionAdapter.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/auth/sessionStorage.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/auth/sessionTypes.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/Header.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/Sidebar.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/ThemeSettings.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/components/UIComponents.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/config/runtime.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/Warehouse.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/features/system/api.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/features/system/contracts.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/features/system/session.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/E:\demo0413\frontend\src\features\system\ui.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/features/system/enterprise/EnterpriseManagementTab.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/features/system/user/UserManagementTab.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/E:\demo0413\frontend\src\features\system\role\RoleManagementTab.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/lib/http/bladeClient.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/permissions/helpers.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/permissions/PermissionContext.tsx, /src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/menuAdapter.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/menuTypes.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/navigationApi.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/navigationBootstrap.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/router/routeRegistry.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m changed tsconfig file detected: E:/demo0413/frontend/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+[2m09:29:38[22m [36m[1m[vite][22m[39m [32mvite.config.ts changed, restarting server...[39m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mmetadata.json[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mpackage.json[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mtsconfig.json[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mvitest.config.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/main.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/types.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/vite-env.d.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/test/auth-adapters.test.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/test/auth-workflow.test.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/test/login-default-credentials.test.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/test/login-view.test.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/test/navigation-bootstrap.test.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/test/runtime-config.test.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/test/system-management-contracts.test.ts[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/Announcement.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/Archive.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/BatchManagement.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/BatchTesting.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/History.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/Login.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/Packaging.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/Permissions.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/views/Warehouse.tsx[22m
+[2m09:29:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/utils/archiveStore.ts[22m
+[2m09:29:39[22m [36m[1m[vite][22m[39m server restarted.
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3002[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://198.18.0.1:[1m3002[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.25.112.1:[1m3002[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.110.148:[1m3002[22m/[39m
+[2m09:41:16[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mindex.html[22m
+[2m09:41:16[22m [36m[1m[vite][22m[39m changed tsconfig file detected: E:/demo0413/frontend/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.

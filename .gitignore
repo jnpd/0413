@@ -1,0 +1,16 @@
+# Root ignore rules
+# Keep local build artifacts and vendor/third-party code out of git.
+
+frontEnd/**/dist/
+frontEnd/node_modules
+frontEnd/test-results
+bladex-boot/src/test
+output/
+
+.env.local
+.tmp
+pua
+.obsidian
+.gstack/
+.agents/
+docs/analysis

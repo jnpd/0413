@@ -9,6 +9,7 @@
 1. 先读 `README.md` 与 `REPO_WIKI.md`
 2. 涉及仓库、环境、外部 PRD、代码分支时，先读 `docs/00-meta/外部依赖与交接说明.md`
 2.5. 涉及业务规则、字段、状态、枚举、权限、交互时，先读 `docs/02-rules/README.md` 与 `docs/02-rules/业务规则选路索引.md`
+2.6. 涉及编写或修改 `changes/`、`openspec/changes/` 文档时，先读 `docs/00-meta/change-writing-anti-drift-guide.md`
 3. 没有规格的需求不直接开始实现
 4. 高风险改动必须说明范围、风险、测试和回滚
 5. 输出优先引用已有知识，不凭空发明业务规则
@@ -66,6 +67,41 @@
 
 需求 -> proposal -> spec -> design -> test-cases -> tests-first -> implementation -> verify -> knowledge write-back
 
+## AI 规格生成硬门禁
+
+当 Agent 编写、改写、补齐、评审 `changes/` 或 `openspec/changes/` 文档时，除已有规则外，必须额外满足下面这些硬门禁：
+
+1. 先做“事实核对表”，再下结论
+2. 任何“能力存在 / 不存在 / 只占位 / 已完成 / 未完成”的判断，都不能只靠单一来源
+3. 只要模块 PRD、数据库设计、模块测试用例任一处已经冻结业务能力，就禁止因为“暂时没搜到代码”而把它写成不存在
+4. 基础 change 只能冻结基础能力，不能替代模块业务真相
+5. 授权、删除、保存、租户、权限边界这类能力，默认按“读 + 写 + 反馈 + 越权校验”四段闭环检查
+
+### 事实核对表强制格式
+
+涉及某个模块或某项能力时，Agent 在形成 canonical 结论前，内部或输出中必须先整理至少以下字段：
+
+- 能力项
+- PRD / 模块文档证据
+- 后端证据
+- 前端证据
+- 结论：`已验证事实` / `待校准` / `不在本次范围`
+
+### 强制判定规则
+
+- 只要 PRD 或模块文档明确写了“新增 / 编辑 / 删除 / 授权 / 状态规则 / 权限规则”，就不能再写“该能力不存在”
+- 若前后端证据不一致，只能写“待校准”，不能擅自裁成“只占位”
+- 若只验证了读取链路，不能把该能力写成“已完成”，最多写“读取已接通，写入闭环待校准”
+- 若页面只是禁用或隐藏控件，不能直接推导后端安全边界已经成立
+
+### 自动门禁
+
+编写或修改 change 文档后，必须运行：
+
+`python scripts/check_change_guardrails.py --feature <feature-id>`
+
+若脚本返回失败，禁止把该份 change / spec 当作可直接落地的 canonical 结论。
+
 ## 高风险事项
 
 - 批量测试历史闭环
@@ -99,11 +135,12 @@
   - `changes/<YYYY-MM>/_index.md` 只做月份入口索引，按时间找 change
   - `changes/<YYYY-MM>/<feature>/proposal.md` 是该 feature 的唯一 proposal 文档，只放 proposal
   - `openspec/changes/<feature>/` 是该 feature 的 canonical spec 真源，只放 `design.md`、`tasks.md`、`test-cases.md`、`acceptance.md`、`contracts/`、`specs/`
-  - `openspec/changes/<feature>/` 禁止出现 `proposal.md`
-  - 禁止在 `changes/` 和 `openspec/` 同时出现同名、同职责文档，避免双真源
-  - proposal 变更只改 `changes/<YYYY-MM>/<feature>/proposal.md`
-  - spec / design / tasks / test-cases / acceptance / contracts / specs 只改 `openspec/changes/<feature>/`
-  - 禁止把 canonical 文档写到 `docs/superpowers/`、`tmp/`、`notes/` 或其他 agent 工作目录
+- `openspec/changes/<feature>/` 禁止出现 `proposal.md`
+- 禁止在 `changes/` 和 `openspec/` 同时出现同名、同职责文档，避免双真源
+- proposal 变更只改 `changes/<YYYY-MM>/<feature>/proposal.md`
+- spec / design / tasks / test-cases / acceptance / contracts / specs 只改 `openspec/changes/<feature>/`
+- 如果后续 change 覆盖旧 change 的部分口径，必须在新 change 写明覆盖关系，并在月份索引或旧入口处补阅读顺序 / supersede 说明
+- 禁止把 canonical 文档写到 `docs/superpowers/`、`tmp/`、`notes/` 或其他 agent 工作目录
   - 如果 `openspec/` 不存在，先创建目录结构，再写文档
   - 每次 change 开始前，必须先确定 `feature id`
   - 新 change 的最小落盘顺序固定为：先建 `changes/<YYYY-MM>/<feature>/proposal.md`，再建 `openspec/changes/<feature>/` 骨架，最后在当月 `_index.md` 挂入口
